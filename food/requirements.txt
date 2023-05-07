@@ -1,0 +1,9 @@
+tqdm
+torch
+numpy
+pandas
+matplotlib
+torchaudio
+torchvision
+opencv-python
+git+https://github.com/facebookresearch/segment-anything.git
