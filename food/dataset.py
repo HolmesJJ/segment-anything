@@ -40,6 +40,7 @@ def create_dataset():
             os.makedirs(image_dir)
             image = cv2.imread(image)
             image = cv2.resize(image, (IMAGE_SIZE, IMAGE_SIZE))
+            cv2.imwrite(os.path.join(DATASET_PATH, image_name + ".jpg"), image)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             masks = mask_generator.generate(image)
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
@@ -58,10 +59,21 @@ def create_dataset():
                 masked_img = cv2.merge(rgba, 4)
                 contours, _ = cv2.findContours(cv2.cvtColor(masked_img, cv2.COLOR_BGR2GRAY),
                                                cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
-                x, y, w, h = cv2.boundingRect(contours[0])
-                cropped_img = masked_img[y:y + h, x:x + w]
-                cv2.imwrite(os.path.join(DATASET_PATH, image_name + ".jpg"), image)
+                top_left_x = top_left_y = IMAGE_SIZE
+                right_bottom_x = right_bottom_y = 0
+                for contour in contours:
+                    x, y, w, h = cv2.boundingRect(contour)
+                    if top_left_x >= x:
+                        top_left_x = x
+                    if top_left_y >= y:
+                        top_left_y = y
+                    if right_bottom_x <= x + w:
+                        right_bottom_x = x + w
+                    if right_bottom_y <= y + h:
+                        right_bottom_y = y + h
+                cropped_img = masked_img[top_left_y:right_bottom_y, top_left_x:right_bottom_x]
                 cv2.imwrite(os.path.join(image_dir, str(j) + ".jpg"), cropped_img)
+                cv2.imwrite(os.path.join(image_dir, str(j) + "_mask.jpg"), mask)
 
 
 def plot_image(image, show_mask=False):
