@@ -1,3 +1,4 @@
+# https://github.com/facebookresearch/segment-anything/issues/54
 # https://github.com/facebookresearch/segment-anything/blob/main/segment_anything/automatic_mask_generator.py
 
 import os
@@ -40,7 +41,7 @@ def create_dataset():
             os.makedirs(image_dir)
             image = cv2.imread(image)
             image = cv2.resize(image, (IMAGE_SIZE, IMAGE_SIZE))
-            cv2.imwrite(os.path.join(DATASET_PATH, image_name + ".jpg"), image)
+            cv2.imwrite(os.path.join(DATASET_PATH, image_name + ".png"), image)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             masks = mask_generator.generate(image)
             image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
@@ -72,8 +73,8 @@ def create_dataset():
                     if right_bottom_y <= y + h:
                         right_bottom_y = y + h
                 cropped_img = masked_img[top_left_y:right_bottom_y, top_left_x:right_bottom_x]
-                cv2.imwrite(os.path.join(image_dir, str(j) + ".jpg"), cropped_img)
-                cv2.imwrite(os.path.join(image_dir, str(j) + "_mask.jpg"), mask)
+                cv2.imwrite(os.path.join(image_dir, str(j) + ".png"), cropped_img)
+                cv2.imwrite(os.path.join(image_dir, str(j) + "_mask.png"), mask)
 
 
 def plot_image(image, show_mask=False):
@@ -106,7 +107,20 @@ def show_annotations(annotations):
     ax.imshow(img)
 
 
+def convert_jpg_to_png():
+    with tqdm(total=len(RAW_DATA)) as pbar:
+        for i, image in enumerate(RAW_DATA):
+            pbar.set_description("Converting: %d" % (1 + i))
+            pbar.update(1)
+            jpg_img = cv2.imread(image)
+            jpg_fp = RAW_DATA_PATH + os.path.splitext(os.path.basename(image))[0] + ".jpg"
+            png_fp = RAW_DATA_PATH + os.path.splitext(os.path.basename(image))[0] + ".png"
+            cv2.imwrite(png_fp, jpg_img, [cv2.IMWRITE_PNG_COMPRESSION, 0])
+            os.remove(jpg_fp)
+
+
 if __name__ == "__main__":
     # plot_image(RAW_DATA_PATH + "00000000.jpg", show_mask=True)
     if not os.path.isdir(DATASET_PATH):
+        # convert_jpg_to_png()
         create_dataset()
