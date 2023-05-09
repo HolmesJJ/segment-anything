@@ -40,7 +40,6 @@ def create_dataset():
             image_dir = os.path.join(DATASET_PATH, image_name)
             os.makedirs(image_dir)
             image = cv2.imread(image)
-            image = cv2.resize(image, (IMAGE_SIZE, IMAGE_SIZE))
             cv2.imwrite(os.path.join(DATASET_PATH, image_name + ".png"), image)
             image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
             masks = mask_generator.generate(image)
