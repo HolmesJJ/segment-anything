@@ -12,7 +12,9 @@
 
 * [Official Website](https://requester.mturk.com/)
 * [Suggested Price](https://aws.amazon.com/sagemaker/data-labeling/pricing/)
-    * Only have 104 ingredient categories now, may need to add more categories.
+    * Only have 102 ingredient categories + 1 background + 1 other ingredient now, may need to add more categories.
+        * But we don't know what other categories we will need, we only know when we are labelling the image, it will increase the difficulty of assigning tasks on Turk.
+            * If the food ingredient does not belong to the current 102 categories, it may only be possible for the person who is labeling the food to assign these ingredients to "other ingredient", and then we have to further process the image in "other ingredient" ourselves.
     * The performance of the SAM Demo provided by Meta is much better than that of their open source models.
         * [It has not been solved yet](https://github.com/facebookresearch/segment-anything/issues/54), we may need to manually adjust the parameters. It is challenge due to the black-box nature of model hyperparameters.
     * Estimated Price: $0.05 * (400 each category) * (104 categories) * (3 triple budget) * (1.35 SGD to USD) = S$8424
