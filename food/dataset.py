@@ -1,4 +1,5 @@
 # https://github.com/facebookresearch/segment-anything/issues/54
+# https://github.com/facebookresearch/segment-anything/issues/185
 # https://github.com/facebookresearch/segment-anything/blob/main/segment_anything/automatic_mask_generator.py
 
 import os
@@ -97,13 +98,14 @@ def show_annotations(annotations):
     sorted_annotations = sorted(annotations, key=(lambda item: item["area"]), reverse=True)
     ax = plt.gca()
     ax.set_autoscale_on(False)
-    img = np.ones((sorted_annotations[0]["segmentation"].shape[0], sorted_annotations[0]["segmentation"].shape[1], 4))
-    img[:, :, 3] = 0
+    annotated_image = np.ones((sorted_annotations[0]["segmentation"].shape[0],
+                               sorted_annotations[0]["segmentation"].shape[1], 4))
+    annotated_image[:, :, 3] = 0
     for annotation in sorted_annotations:
         m = annotation["segmentation"]
         color_mask = np.concatenate([np.random.random(3), [0.35]])
-        img[m] = color_mask
-    ax.imshow(img)
+        annotated_image[m] = color_mask
+    ax.imshow(annotated_image)
 
 
 def convert_jpg_to_png():

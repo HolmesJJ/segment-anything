@@ -46,4 +46,5 @@ FoodSeg103*.zip
 FoodSeg103/
 dataset*.zip
 dataset/
+parameters/
 .pth
