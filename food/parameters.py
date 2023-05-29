@@ -45,7 +45,7 @@ def generate_annotations(masks, image_name, prefix, start_time):
     annotated_image = cv2.cvtColor((annotated_image * 255).astype(np.uint8), cv2.COLOR_RGBA2BGRA)
     end_time = time()
     runtime = end_time - start_time
-    prefix = prefix + "_time_" + runtime
+    prefix = prefix + "_time_" + str(runtime)
     cv2.imwrite(PARAMETERS_PATH + image_name + "/" + prefix + ".png", annotated_image)
     print(PARAMETERS_PATH + image_name + "/" + prefix + ".png")
 
