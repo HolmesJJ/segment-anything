@@ -42,9 +42,6 @@ yarn.lock
 package-lock.json
 
 # data
-FoodSeg103*.zip
-FoodSeg103/
-dataset*.zip
 dataset/
 parameters/
 .pth
