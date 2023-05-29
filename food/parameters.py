@@ -70,7 +70,7 @@ def search_parameters_grid(image_path, image_name):
 
 
 if __name__ == "__main__":
-    # os.environ['CUDA_VISIBLE_DEVICES'] = "0"
+    # os.environ["CUDA_VISIBLE_DEVICES"] = "0"
     os.makedirs(PARAMETERS_PATH)
     for img_path in IMAGE_PATHS:
         img_name = os.path.splitext(os.path.basename(img_path))[0]
