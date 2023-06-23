@@ -31,7 +31,13 @@ def create_dataset():
     sam = sam_model_registry[MODEL_TYPES[MODEL]](checkpoint=CHECKPOINTS[MODEL])
     if torch.cuda.is_available():
         sam.to(device=DEVICE)
-    mask_generator = SamAutomaticMaskGenerator(model=sam)
+    mask_generator = SamAutomaticMaskGenerator(model=sam,
+                                               pred_iou_thresh=0.95,
+                                               box_nms_thresh=0.95,
+                                               crop_n_layers=1,
+                                               crop_nms_thresh=0.95,
+                                               crop_n_points_downscale_factor=2,
+                                               min_mask_region_area=MIN_MASK_REGION_AREA)
     os.makedirs(DATASET_PATH)
     with tqdm(total=len(RAW_DATA)) as pbar:
         for i, image in enumerate(RAW_DATA):
