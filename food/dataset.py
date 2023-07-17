@@ -21,10 +21,19 @@ MIN_MASK_REGION_AREA = 50 * 50
 IMAGE_SIZE = 512
 
 
-RAW_DATA = glob.glob("FoodSeg103/*")
-RAW_DATA_PATH = "FoodSeg103/"
-DATASET_PATH = "dataset/"
+RAW_DATA = glob.glob("FoodSeg103-train/*")
+RAW_DATA_PATH = "FoodSeg103-train/"
+DATASET = glob.glob("dataset-train/*")
+DATASET_PATH = "dataset-train/"
 DEVICE = "cuda"
+
+
+def check_empty_folder():
+    for i, food in enumerate(DATASET):
+        if os.path.isdir(food):
+            ingredients = glob.glob(food + "/*")
+            if len(ingredients) == 0:
+                print(food)
 
 
 def create_dataset():
@@ -38,13 +47,16 @@ def create_dataset():
                                                crop_nms_thresh=0.95,
                                                crop_n_points_downscale_factor=2,
                                                min_mask_region_area=MIN_MASK_REGION_AREA)
-    os.makedirs(DATASET_PATH)
+    if not os.path.isdir(DATASET_PATH):
+        os.makedirs(DATASET_PATH)
     with tqdm(total=len(RAW_DATA)) as pbar:
         for i, image in enumerate(RAW_DATA):
             pbar.set_description("Segmenting: %d" % (1 + i))
             pbar.update(1)
             image_name = os.path.splitext(os.path.basename(image))[0]
             image_dir = os.path.join(DATASET_PATH, image_name)
+            if os.path.isdir(image_dir):
+                continue
             os.makedirs(image_dir)
             image = cv2.imread(image)
             cv2.imwrite(os.path.join(DATASET_PATH, image_name + ".png"), image)
@@ -128,6 +140,7 @@ def convert_jpg_to_png():
 
 if __name__ == "__main__":
     # plot_image(RAW_DATA_PATH + "00000000.jpg", show_mask=True)
-    if not os.path.isdir(DATASET_PATH):
-        # convert_jpg_to_png()
-        create_dataset()
+    # check_empty_folder()
+    # if not os.path.isdir(DATASET_PATH):
+    #     convert_jpg_to_png()
+    create_dataset()
